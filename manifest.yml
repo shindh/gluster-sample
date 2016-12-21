@@ -4,5 +4,5 @@ applications:
   memory: 512M
   instances: 1
   host: nodejsGluster
-  command: npm start
+  command: node gluster
   path: ./
