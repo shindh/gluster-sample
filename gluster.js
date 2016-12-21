@@ -14,7 +14,6 @@ if (process.env.VCAP_SERVICES) {
 
 	if (glusterfsConfig) { 
 		var config = glusterfsConfig[0]; 
-		console.log('GlusterFS Services: ' + glusterfsConfig);
 		credentials = {
 			provider: 'openstack', // 
 		    username: config.credentials.username,
@@ -22,6 +21,11 @@ if (process.env.VCAP_SERVICES) {
 			authUrl:  config.credentials.auth_url.substring(0, config.credentials.auth_url.lastIndexOf('/')),
 			region: 'RegionOne' //
 		};
+		console.log('provider: ' + credentials.provider);
+		console.log('username: ' + credentials.username);
+		console.log('password: ' + credentials.password);
+		console.log('authUrl: ' + credentials.authUrl);
+		console.log('region: ' + credentials.region);
 	}
 } else {
 	// local env.
@@ -32,8 +36,53 @@ if (process.env.VCAP_SERVICES) {
 		authUrl:  'http://54.199.136.22:5000/',
 		region: 'RegionOne'
 	};
-	console.log('local env: ' + credentials);
+	console.log('local env: ' + credentials.username);
 }
+
+// create Client
+var client = pkgcloud.storage.createClient(credentials);
+
+// check container
+client.getContainer(container_name, function(err, container){
+    if (err)
+    {
+		// if container not exist
+        if (err.statusCode === 404)
+        {
+      		// create container
+            client.createContainer({name:container_name}, function(create_err, create_container){
+                if (create_err) console.log(err);
+        		else
+        		{  
+			        // if container created successfully, setting a readable member(X-Contaner-Read: .r:*)
+		        	// 컨테이너가 성공적으로 생성되었다면 컨테이너를 누구나 읽을 수 있게 설정한다.(X-Contaner-Read: .r:*)
+			        // There is a bug in the code(pkgcloud). so i used api call.
+			        // pkgcloud 모듈에서 metadata를 넣을 경우 prefix가 붙는 로직때문에 제대로 위의 값이 입력이 안되므로 api를 통해서 설정.
+			        var serviceUrl = url.parse(create_container.client._serviceUrl);
+			        var option = {
+			            host: serviceUrl.hostname,
+			            port: serviceUrl.port,
+			            path: serviceUrl.path+'/'+container_name,
+			            method: 'POST',
+			            headers: {
+			              'X-Auth-Token': create_container.client._identity.token.id,
+			              'X-Container-Read': '.r:*' // ACL form
+			            }
+			        };
+			        var req = http.request(option, function(res){
+			          });
+			          req.end();
+        		}
+
+            });
+        }
+        else    
+        	console.log(err);
+    }
+});
+
+
+
 
 /**
  * Get port from environment and store in Express.
