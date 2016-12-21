@@ -1,8 +1,8 @@
 ---
 applications:
-- name: nodejsGluster
+- name: nodejs
   memory: 512M
   instances: 1
-  host: nodejsGluster
+  host: nodejs
   command: node gluster
   path: ./
