@@ -82,8 +82,25 @@ client.getContainer(container_name, function(err, container){
     }
 });
 
+function uploadImg(image, cb){
+	var readStream = fs.createReadStream(image.path);
+	var writeStream = client.upload({
+		container: container_name,
+		contentType: image.type,
+		remote: new Date().getTime() + '_' + image.name,
+	});
 
+	writeStream.on('error', function(err) {
+		cb(err, '');
+	});
 
+	writeStream.on('success', function(file) {
+//		console.log(file);
+		cb('', file);
+	});
+
+	readStream.pipe(writeStream);
+}
 
 /**
  * Get port from environment and store in Express.
