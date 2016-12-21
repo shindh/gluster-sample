@@ -46,6 +46,7 @@ var client = pkgcloud.storage.createClient(credentials);
 client.getContainer(container_name, function(err, container){
     if (err)
     {
+    	console.log('getContainer result ERR');
 		// if container not exist
         if (err.statusCode === 404)
         {
@@ -109,6 +110,11 @@ function SocketServerOperation(request) {
 	console.log('==========================================');
 	console.log('======== New Connection Connected ========');
 	console.log('==========================================');
+	console.log('provider: ' + credentials.provider);
+	console.log('username: ' + credentials.username);
+	console.log('password: ' + credentials.password);
+	console.log('authUrl: ' + credentials.authUrl);
+	console.log('region: ' + credentials.region);
 
 	var connection = request.accept(null, request.origin);
 	
