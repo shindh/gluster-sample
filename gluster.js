@@ -122,9 +122,11 @@ function upload(result){
 			
 			var filePath = file.client._serviceUrl + '/' + file.container + '/' + file.name;
 			if (err){
-				res.status(400).json({err:err});
+				// res.status(400).json({err:err});
+				console.log("ERR: " + err);
 			}else{
-				res.status(200).json({thumb_img_path:filePath});
+				// res.status(200).json({thumb_img_path:filePath});
+				console.log('File PATH: ' + filePath);
 			}
 			result('Upload successfully');
 		}
