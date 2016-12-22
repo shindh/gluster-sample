@@ -96,7 +96,7 @@ function uploadImg(cb){
 	var writeStream = client.upload({
 		container: container_name,
 		contentType: 'png',
-		remote: new Date().getTime() + '_' + 'sample',
+		remote: 'sample.png',
 	});
 
 	writeStream.on('error', function(err) {
@@ -118,8 +118,7 @@ function upload(result){
 	uploadImg(function(err, file){
 		if(err) {
 			result('Upload failed..');
-		}else {
-			
+		} else {
 			var filePath = file.client._serviceUrl + '/' + file.container + '/' + file.name;
 			if (err){
 				// res.status(400).json({err:err});
