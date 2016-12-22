@@ -4,6 +4,7 @@ var http = require('http');
 var ip = require('ip');
 var webSocketServer = require('websocket').server;
 var webSocketClient = require('websocket').client;
+var formidable = require('formidable');
 
 var credentials = {};
 var container_name = 'node_container';
@@ -100,6 +101,37 @@ function uploadImg(image, cb){
 	});
 
 	readStream.pipe(writeStream);
+}
+
+function upload() {
+	console.log('-> upload was called\n\n');
+	var isImage = false;
+
+	var form = new formidable.IncomingForm();
+	form.parse(req, function(err, fields, files){
+		if (err){
+			console.log('form.parse occur error!!');
+			console.log(err);
+		}	
+		else
+		{
+			var image = files.file;
+		
+			console.log('>>>>>>>>>>>\n'+JSON.stringify(files));
+			console.log('->image:\n');
+			console.log();
+			var kb = image.size / 1024 | 0;
+			isImage = checkType(image);
+			console.log('-> isImage: ' + isImage );
+	
+			console.log('-> upload glusterfs');
+			glusterfs.uploadImg(image, function(err, file){
+				var filePath = file.client._serviceUrl + '/' + file.container + '/' + file.name;
+				if (err)	res.status(400).json({err:err});
+				else		res.status(200).json({thumb_img_path:filePath});
+			});
+		}
+	});
 }
 
 /**
