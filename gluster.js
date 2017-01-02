@@ -93,7 +93,7 @@ function uploadImg(cb){
 	var writeStream = client.upload({
 		container: container_name,
 		contentType: 'png',
-		remote: 'sample.png',
+		remote: 'm2soft/sample.png',
 	});
 
 	writeStream.on('error', function(err) {
