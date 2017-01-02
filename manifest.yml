@@ -6,3 +6,4 @@ applications:
   host: nodejs
   command: node gluster
   path: ./
+  buildpack: nodejs_buildpack
