@@ -32,6 +32,7 @@ if (process.env.VCAP_SERVICES) {
 		console.log('region: ' + credentials.region);
 	}
 } else {
+	console.log('Can not find glusterfs service instance !!!');
 	// local env.
 	credentials = {
 		provider: 'openstack',
