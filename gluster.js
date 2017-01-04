@@ -19,7 +19,7 @@ if (process.env.VCAP_SERVICES) {
 	if (glusterfsConfig) { 
 		var config = glusterfsConfig[0]; 
 		credentials = {
-			provider: config.credentials.provider,
+			provider: 'openstack',
 		    username: config.credentials.username,
 		    password: config.credentials.password,
 			authUrl:  config.credentials.auth_url.substring(0, config.credentials.auth_url.lastIndexOf('/')),
